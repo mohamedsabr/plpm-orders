@@ -436,7 +436,7 @@ function regionBatch(){
   return Object.values(latest).sort((a,b)=>ix(a.site)-ix(b.site));
 }
 function regPrintBtn(){
-  if(mode!==CHEM||!region)return "";
+  if(mode!==CHEM||!region||view==="totals")return "";
   const n=regionBatch().length;
   return `<button type="button" class="btn regprint" id="regPrint" ${n?"":"disabled"}>🖨️ طباعة كيميكال ${esc(region)}<span class="num"> (${ar(n)} ${n>2&&n<11?"فروع":"فرع"})</span></button>`;
 }
@@ -453,8 +453,8 @@ function printRegion(){
 function regionChips(){
   return `<div class="chips region">${[["","كل المناطق"],...REGIONS.map(r=>[r,r])].map(([k,l])=>`<button type="button" class="chip" data-region="${k}" aria-pressed="${region===k}">${l}</button>`).join("")}</div>`;
 }
-function modeSwitch(){
-  return regionChips()+`<div class="tabs mode" role="tablist">${CATS.map(c=>{const n=saved().filter(o=>kindOf(o)===c&&inRegion(o)&&filled(o).length&&(!coFilter||o.company===coFilter)).length;
+function modeSwitch(noReg){
+  return (noReg?"":regionChips())+`<div class="tabs mode" role="tablist">${CATS.map(c=>{const n=saved().filter(o=>kindOf(o)===c&&inRegion(o)&&filled(o).length&&(!coFilter||o.company===coFilter)).length;
     return `<button type="button" role="tab" class="tabb" data-mode="${c}" aria-selected="${mode===c}"><b>${c}</b><span class="num">${ar(n)} طلبية</span></button>`}).join("")}</div>`+regPrintBtn();
 }
 function rowHtml(o,mode){
@@ -586,8 +586,9 @@ function renderTotals(){
     body=`<div class="mwrap"><table class="matrix"><thead><tr><th class="mn">الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th class="mt">الإجمالي</th></tr></thead><tbody>${shown.map(r=>`<tr><td class="mn">${esc(r.name)}</td>${sites.map(s=>`<td class="num">${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td class="mt num">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table></div>`;
   }
   return topBar("الإجمالي")+`
-  ${modeSwitch()}
+  ${modeSwitch(true)}
   ${coChips(coFilter,"data-cof",true)}
+  ${regionChips()}
   ${chips(PERIODS,tPeriod,"data-tp")}
   ${chips([["all","كل الطلبيات"],["sent","تم إرسالها"],["no","لم يتم إرسالها"]],tSent,"data-ts")}
   <div class="hstats num"><div><b>${ar(rows.length)}</b><span>صنف</span></div><div><b>${ar(os.length)}</b><span>طلبية</span></div><div><b>${ar(sites.length)}</b><span>فرع</span></div></div>
