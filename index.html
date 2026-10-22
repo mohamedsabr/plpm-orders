@@ -86,6 +86,8 @@ h2.sec{font-size:.85rem;font-weight:600;color:var(--muted);margin:0 0 -6px;lette
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .tools .search{flex:1 1 180px}
 .tlist{list-style:none;margin:0;padding:0}
+.dhead{font-weight:800;padding:8px 16px;font-size:.95rem;color:#fff}.dhead td{padding:8px 12px!important;text-align:right!important;font-weight:800;color:#fff}
+.dhead.d0,.dhead.d0 td{background:#b45309}.dhead.d1,.dhead.d1 td{background:#1f3fa8}.dhead.d2,.dhead.d2 td{background:#0f766e}
 .trow{border-bottom:1px solid var(--line)}.trow:last-child{border-bottom:0}
 .thead{width:100%;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(60px,1fr) auto;gap:12px;align-items:center;padding:12px 16px;background:none;border:0;text-align:right}
 .thead:hover{background:var(--fill)}
@@ -229,7 +231,7 @@ const CATALOG={
     "يد معدن","يد معدن تقيل","يد معدن للشرشوبة","يد معدن الوايبر","يد معدن أخضر","يد سوداء","يد أحمر","يد أخضر","يد موب",
     "مساحة معدن","مساحة بلاستيك","مساحة بلاستيك حمراء",
     "جاروف قلاب","جاروف أزرق","جاروف أخضر","جاروف أحمر",
-    "فرش موب","فرش موب أحمر","فرش موب أخضر","فرش موب أزرق","عضم موب","عضم موب أحمر","عضم موب أزرق","عضم موب أخضر","شرشوبة",
+    "فرش موب","فرش موب أحمر","فرش موب أخضر","فرش موب أزرق","عضم موب","شرشوبة",
     "بلة كاملة","غيار بلة",
     "فوط مايكروفايبر","فوط مايكروفايبر أحمر","فوط مايكروفايبر أخضر","فوط مايكروفايبر أصفر","فوط مايكروفايبر أزرق",
     "فوطة مايكروفايبر 3M","فوط قطن","فوط قطن خضراء","فوط قطن حمراء","فوط قطن زرقاء","فوط عش نملة","فوط أرضيات","طرحة سوداء",
@@ -241,7 +243,15 @@ const CATALOG={
   [CHEM]:[{"name": "هاند سوب", "unit": "لتر"}, {"name": "انفراتول", "unit": "كرتونة"}, {"name": "تكنوبلاس", "unit": "عبوة"}, {"name": "فريبرز", "unit": "كرتونة"}, {"name": "أوفين", "unit": "كرتونة"}, {"name": "نت", "unit": "كرتونة"}, {"name": "ماجيك", "unit": "عبوة"}, {"name": "روما", "unit": "عبوة"}, {"name": "راستك", "unit": "عبوة"}, {"name": "ملمع زجاج", "unit": "عبوة"}, {"name": "ملمع جلد", "unit": "عبوة"}, {"name": "ملمع معادن", "unit": "عبوة"}, {"name": "ملمع نحاس", "unit": "عبوة"}, {"name": "هيلجا", "unit": "لتر"}, {"name": "R.G.L", "unit": "لتر"}, {"name": "امبسادور", "unit": "كيلو"}, {"name": "أكسجين", "unit": "لتر"}, {"name": "بريموتك", "unit": "لتر"}, {"name": "سيفتي", "unit": "لتر"}, {"name": "دبل زد", "unit": "كرتونة"}, {"name": "ديسكلر", "unit": "كرتونة"}, {"name": "سكرابنج كريم", "unit": "عبوة"}, {"name": "سباركل بلس", "unit": "كرتونة"}, {"name": "تك تك", "unit": "عبوة"}, {"name": "وود تك", "unit": "عبوة"}, {"name": "مزيل أسمنت", "unit": "عبوة"}, {"name": "مزيل أملاح", "unit": "كرتونة"}, {"name": "كلور", "unit": "كرتونة"}, {"name": "معطر فريدا", "unit": "كرتونة"}, {"name": "معطر مسك", "unit": "كرتونة"}, {"name": "معطر فريش لايت", "unit": "كرتونة"}, "بخاخة فارغة"]
 };
 const CHEM_NAMES=new Set(CATALOG[CHEM].map(e=>e.name||e));
-const ITEM_RENAME={"فوط أرضية":"فوط أرضيات","فرشة موب أحمر":"فرش موب أحمر","فرشة موب أزرق":"فرش موب أزرق","مساحة حديد":"مساحة معدن","نتاية":"فيشة نتاية","راسك":"راستك","RGL":"R.G.L","يد شرشوبة":"يد معدن للشرشوبة","غيار جلد إيطالي 35 سم":"غيار جلد إكسويزر إيطالي 35 سم","جلد إكسويزر إيطالي 35 سم":"غيار جلد إكسويزر إيطالي 35 سم","جلد إكسويزر إيطالي 45 سم":"غيار جلد إكسويزر إيطالي 45 سم"};
+const ITEM_RENAME={"عضم موب أحمر":"عضم موب","عضم موب أزرق":"عضم موب","عضم موب أخضر":"عضم موب","فوط أرضية":"فوط أرضيات","فرشة موب أحمر":"فرش موب أحمر","فرشة موب أزرق":"فرش موب أزرق","مساحة حديد":"مساحة معدن","نتاية":"فيشة نتاية","راسك":"راستك","RGL":"R.G.L","يد شرشوبة":"يد معدن للشرشوبة","غيار جلد إيطالي 35 سم":"غيار جلد إكسويزر إيطالي 35 سم","جلد إكسويزر إيطالي 35 سم":"غيار جلد إكسويزر إيطالي 35 سم","جلد إكسويزر إيطالي 45 سم":"غيار جلد إكسويزر إيطالي 45 سم"};
+/* الأقسام: أي صنف مش مكتوب هنا يبقى "المورد" */
+const DEPTS=["شراء من الخارج","المورد","المخازن"];
+const DEPT_MAP={
+  "شراء من الخارج":["جاروف أخضر","شرشوبة بيد معدن","فيشة دكر","فيشة نتاية","كوتش رجالي","شريط الحمام","كيس قفيز 20 سم","كوتش حريمي مقاس 37:40","سلك خشنة"],
+  "المخازن":["كافروما","فرش موب","فرش موب أحمر","فرش موب أخضر","فرش موب أزرق","فوط قطن","فوط قطن زرقاء","فوط قطن حمراء","فوط قطن خضراء","جاروف أحمر","مقشة خضراء"]
+};
+const DEPT_OF=Object.fromEntries(Object.entries(DEPT_MAP).flatMap(([d,L])=>L.map(n=>[n,d])));
+const deptOf=n=>DEPT_OF[n]||"المورد";
 const UNITS=["","كرتونة","عبوة","لتر","كيلو","جالون","لفة","دستة"];
 const DEF_UNIT=Object.fromEntries(CATS.flatMap(c=>CATALOG[c].filter(e=>e.unit).map(e=>[e.name,e.unit])));
 function normItem(i){
@@ -286,7 +296,7 @@ const mName=m=>new Date(m+"-01T00:00").toLocaleDateString("ar-EG",{month:"long",
 
 /* ---------- state ---------- */
 let region="";
-let tPeriod="month", tSent="all", tView="list", tSort="qty", tQ="", tOpen=new Set();
+let tDept="", tPeriod="month", tSent="all", tView="list", tSort="qty", tQ="", tOpen=new Set();
 let tab="أدوات نظافة", mode="أدوات نظافة", orders=[], view="home", curId=null, coFilter="", itemQ="", hQ="", hOpen=new Set(), confirmDel=false, ready=false;
 try{coFilter=localStorage.getItem("ord.co")||"";mode=localStorage.getItem("ord.mode")||mode;region=localStorage.getItem("ord.region")||""}catch(e){}
 if(region&&!REGIONS.includes(region))region="";
@@ -557,38 +567,43 @@ function totalsData(){
     &&(tSent==="all"||(tSent==="sent"?!!o.sent:!o.sent)));
   const map=new Map();
   os.forEach(o=>filled(o).filter(i=>catOf(i)===mode).forEach(i=>{
-    let a=map.get(i.name);if(!a){a={name:i.name,units:{},by:{},sum:0};map.set(i.name,a)}
+    let a=map.get(i.name);if(!a){a={name:i.name,dept:deptOf(i.name),units:{},by:{},sum:0};map.set(i.name,a)}
     const u=i.unit||"";a.units[u]=(a.units[u]||0)+qtyOf(i);a.sum+=qtyOf(i);
     const b=a.by[o.site]||(a.by[o.site]={});b[u]=(b[u]||0)+qtyOf(i);
   }));
   const order=new Map();CATS.forEach(c=>CATALOG[c].forEach((e,k)=>order.set(e.name||e,order.size)));
   let rows=[...map.values()];
   rows.sort(tSort==="qty"?(a,b)=>b.sum-a.sum:tSort==="name"?(a,b)=>a.name.localeCompare(b.name,"ar"):(a,b)=>(order.get(a.name)??1e9)-(order.get(b.name)??1e9));
-  const sites=[...new Set(os.map(o=>o.site))].sort((a,b)=>SITES.indexOf(a)-SITES.indexOf(b));
-  return {os,rows,sites};
+  rows.sort((a,b)=>DEPTS.indexOf(a.dept)-DEPTS.indexOf(b.dept));
+  const deptN=Object.fromEntries(DEPTS.map(d=>[d,rows.filter(r=>r.dept===d).length]));
+  if(tDept)rows=rows.filter(r=>r.dept===tDept);
+  const sites=[...new Set(os.filter(o=>!tDept||filled(o).some(i=>deptOf(i.name)===tDept&&catOf(i)===mode)).map(o=>o.site))].sort((a,b)=>SITES.indexOf(a)-SITES.indexOf(b));
+  return {os,rows,sites,deptN};
 }
 const unitsTxt=u=>Object.entries(u).map(([k,q])=>ar(q)+(k?" "+k:"")).join(" + ");
 function chips(list,cur,attr){return `<div class="chips">${list.map(([k,l])=>`<button type="button" class="chip" ${attr}="${k}" aria-pressed="${cur===k}">${l}</button>`).join("")}</div>`}
 function renderTotals(){
-  const {os,rows,sites}=totalsData();const q=tQ.trim();
+  const {os,rows,sites,deptN}=totalsData();const q=tQ.trim();
+  const dh=(r,k,L,wrap)=>(k===0||L[k-1].dept!==r.dept)?wrap(r.dept):"";
   const shown=rows.filter(r=>!q||r.name.includes(q));
   const max=Math.max(1,...rows.map(r=>r.sum));
   let body="";
   if(!rows.length)body=`<div class="empty">مفيش طلبيات ${esc(mode)} في الفترة دي</div>`;
   else if(tView==="list"){
-    body=`<ul class="tlist">${shown.map((r,k)=>{const open=tOpen.has(r.name);const bs=Object.entries(r.by).sort((a,b)=>Object.values(b[1]).reduce((x,y)=>x+y,0)-Object.values(a[1]).reduce((x,y)=>x+y,0));
+    body=`<ul class="tlist">${shown.map((r,k)=>dh(r,k,shown,d=>`<li class="dhead d${DEPTS.indexOf(d)}">${esc(d)}</li>`)+(()=>{const open=tOpen.has(r.name);const bs=Object.entries(r.by).sort((a,b)=>Object.values(b[1]).reduce((x,y)=>x+y,0)-Object.values(a[1]).reduce((x,y)=>x+y,0));
       return `<li class="trow${open?" open":""}"><button type="button" class="thead" data-trow="${esc(r.name)}" aria-expanded="${open}">
         <span class="tn">${esc(r.name)}<small>${ar(bs.length)} فرع</small></span>
         <span class="tbar"><i style="width:${Math.max(3,r.sum/max*100)}%"></i></span>
         <b class="tq num">${unitsTxt(r.units)}</b></button>
-        ${open?`<ul class="tby">${bs.map(([s,u])=>`<li><span>${esc(s)}</span><b class="num">${unitsTxt(u)}</b></li>`).join("")}</ul>`:""}</li>`}).join("")||`<li class="empty">مفيش صنف بالاسم ده</li>`}</ul>`;
+        ${open?`<ul class="tby">${bs.map(([s,u])=>`<li><span>${esc(s)}</span><b class="num">${unitsTxt(u)}</b></li>`).join("")}</ul>`:""}</li>`})()).join("")||`<li class="empty">مفيش صنف بالاسم ده</li>`}</ul>`;
   }else{
-    body=`<div class="mwrap"><table class="matrix"><thead><tr><th class="mn">الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th class="mt">الإجمالي</th></tr></thead><tbody>${shown.map(r=>`<tr><td class="mn">${esc(r.name)}</td>${sites.map(s=>`<td class="num">${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td class="mt num">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table></div>`;
+    body=`<div class="mwrap"><table class="matrix"><thead><tr><th class="mn">الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th class="mt">الإجمالي</th></tr></thead><tbody>${shown.map((r,k)=>dh(r,k,shown,d=>`<tr class="dhead d${DEPTS.indexOf(d)}"><td colspan="${sites.length+2}">${esc(d)}</td></tr>`)+`<tr><td class="mn">${esc(r.name)}</td>${sites.map(s=>`<td class="num">${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td class="mt num">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table></div>`;
   }
   return topBar("الإجمالي")+`
   ${modeSwitch(true)}
   ${coChips(coFilter,"data-cof",true)}
   ${regionChips()}
+  <div class="chips dept">${[["","كل الأقسام"],...DEPTS.map(d=>[d,d+" ("+ar(deptN[d])+")"])].map(([k,l])=>`<button type="button" class="chip" data-tdept="${k}" aria-pressed="${tDept===k}">${l}</button>`).join("")}</div>
   ${chips(PERIODS,tPeriod,"data-tp")}
   ${chips([["all","كل الطلبيات"],["sent","تم إرسالها"],["no","لم يتم إرسالها"]],tSent,"data-ts")}
   <div class="hstats num"><div><b>${ar(rows.length)}</b><span>صنف</span></div><div><b>${ar(os.length)}</b><span>طلبية</span></div><div><b>${ar(sites.length)}</b><span>فرع</span></div></div>
@@ -601,10 +616,16 @@ function renderTotals(){
   ${rows.length?`<div class="danger-zone"><button type="button" class="btn" id="tPrint">طباعة الإجمالي</button><button type="button" class="btn ghost" id="tWa">انسخ للواتساب</button></div>`:""}`;
 }
 function totalsHtml(){
-  const {os,rows,sites}=totalsData();
+  const {os,rows:allRows}=totalsData();
+  const parts=DEPTS.map(d=>{const rows=allRows.filter(r=>r.dept===d);const sites=[...new Set(rows.flatMap(r=>Object.keys(r.by)))].sort((a,b)=>SITES.indexOf(a)-SITES.indexOf(b));return {d,rows,sites}}).filter(x=>x.rows.length);
   const co=coFilter||"كل الشركات";
   const tr=(r,k)=>`<tr><td class="n">${ar(k+1)}</td><td>${ar(esc(r.name))}</td><td class="q">${unitsTxt(r.units)}</td><td class="b">${Object.entries(r.by).map(([s,u])=>`${esc(s)}: ${unitsTxt(u)}`).join("، ")}</td></tr>`;
-  const mx=sites.length<=8?`<table class="mx"><thead><tr><th>م</th><th>الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th>الإجمالي</th></tr></thead><tbody>${rows.map((r,k)=>`<tr><td>${ar(k+1)}</td><td>${ar(esc(r.name))}</td>${sites.map(s=>`<td>${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td><b>${unitsTxt(r.units)}</b></td></tr>`).join("")}</tbody></table>`:"";
+  const tbl=(rows,sites)=>sites.length<=8?`<table class="mx"><thead><tr><th>م</th><th>الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th>الإجمالي</th></tr></thead><tbody>${rows.map((r,k)=>`<tr><td>${ar(k+1)}</td><td>${ar(esc(r.name))}</td>${sites.map(s=>`<td>${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td><b>${unitsTxt(r.units)}</b></td></tr>`).join("")}</tbody></table>`
+    :`<table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الإجمالي</th><th>الفروع</th></tr></thead><tbody>${rows.map(tr).join("")}</tbody></table>`;
+  const page=({d,rows,sites})=>`<section class="pg"><h1>إجمالي الطلبيات</h1><div class="sub">${esc(mode)}${region?" — "+esc(region):""} — ${esc(periodLabel())}</div>
+<div class="dept d${DEPTS.indexOf(d)}">${esc(d)}</div>
+<div class="meta"><span>${esc(co)}${tSent!=="all"?" — "+(tSent==="sent"?"تم إرسالها":"لم يتم إرسالها"):""}</span><span>${ar(rows.length)} صنف · ${ar(sites.length)} فرع</span><span>تاريخ الطباعة: ${fmtDate(today())}</span></div>
+${tbl(rows,sites)}</section>`;
   return `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>إجمالي ${esc(mode)} - ${esc(periodLabel())}</title>
 <style>@page{size:A4;margin:8mm 10mm}body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;color:#111;margin:0;font-size:12.5px}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 h1{text-align:center;color:#1f3fa8;font-size:21px;margin:0}.sub{text-align:center;color:#444;margin:2px 0 6px}
@@ -612,17 +633,16 @@ h1{text-align:center;color:#1f3fa8;font-size:21px;margin:0}.sub{text-align:cente
 table{width:100%;border-collapse:collapse}th{background:#e6ebfa;color:#1f3fa8;padding:3px 5px;border:1px solid #c9d2ea;text-align:right;font-size:11.5px}
 td{border:1px solid #c9d2ea;padding:3px 5px;vertical-align:top}.n{width:30px;text-align:center;color:#666}.q{width:100px;font-weight:bold;text-align:center}.b{font-size:10.5px;color:#444}
 tr{page-break-inside:avoid}h2{font-size:14px;color:#1f3fa8;margin:8px 0 4px}
+.pg+.pg{break-before:page;page-break-before:always}.dept{text-align:center;color:#fff;font-weight:bold;font-size:17px;padding:5px;margin:4px 0 6px}.dept.d0{background:#b45309}.dept.d1{background:#1f3fa8}.dept.d2{background:#0f766e}
 .mx th,.mx td{font-size:10.5px;padding:3px;text-align:center}.mx td:nth-child(2){text-align:right;white-space:nowrap}
 </style></head><body>
-<h1>إجمالي الطلبيات</h1><div class="sub">${esc(mode)}${region?" — "+esc(region):""} — ${esc(periodLabel())}</div>
-<div class="meta"><span>${esc(co)}${tSent!=="all"?" — "+(tSent==="sent"?"تم إرسالها":"لم يتم إرسالها"):""}</span><span>${ar(rows.length)} صنف · ${ar(os.length)} طلبية · ${ar(sites.length)} فرع</span><span>تاريخ الطباعة: ${fmtDate(today())}</span></div>
-${mx||`<table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الإجمالي</th><th>الفروع</th></tr></thead><tbody>${rows.map(tr).join("")}</tbody></table>`}
+${parts.map(page).join("")}
 <script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script>
 </body></html>`;
 }
 function totalsWa(){
   const {rows}=totalsData();
-  return `*إجمالي ${mode}${region?" — "+region:""} — ${periodLabel()}*${coFilter?"\n"+coFilter:""}\n`+rows.map(r=>`• ${r.name}: ${Object.entries(r.units).map(([k,q])=>q+(k?" "+k:"")).join(" + ")}`).join("\n");
+  return `*إجمالي ${mode}${region?" — "+region:""} — ${periodLabel()}*${coFilter?"\n"+coFilter:""}\n`+rows.map((r,k)=>(k===0||rows[k-1].dept!==r.dept?`\n*— ${r.dept} —*\n`:"")+`• ${r.name}: ${Object.entries(r.units).map(([k,q])=>q+(k?" "+k:"")).join(" + ")}`).join("\n");
 }
 
 /* ---------- receipt ---------- */
@@ -700,6 +720,7 @@ document.addEventListener("click",e=>{
   const d=t.dataset;
   if(d.go!=null){go(d.go);return}
   if(d.tab!=null){tab=d.tab;itemQ="";render();return}
+  if(d.tdept!=null){tDept=d.tdept;render();return}
   if(d.tp!=null){tPeriod=d.tp;render();return}
   if(d.ts!=null){tSent=d.ts;render();return}
   if(d.tv!=null){tView=d.tv;render();return}
