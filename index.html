@@ -653,7 +653,7 @@ function receiptHtml(o){
   let k=0;
   const tr=it=>`<tr><td class="n">${ar(++k)}</td><td>${ar(esc(it.name))}</td><td class="q">${ar(it.qty)}</td><td class="u">${esc(unitTxt(it.unit))}</td></tr>`;
   const head=`<thead><tr><th class="n">م</th><th>الصنف</th><th class="q">المطلوب</th><th class="u">الوحدة</th></tr></thead>`;
-  const tbl=(L,c)=>{const h=Math.ceil(L.length/2),t=x=>`<table${c?` class="${c}"`:""}>${head}<tbody>${x.map(tr).join("")}</tbody></table>`;if(L.length<=14)return t(L);const A=t(L.slice(0,h)),B=t(L.slice(h));return `<div class="cols">${A}${B}</div>`};const mainT=tbl(main);
+  const tbl=(L,c)=>{const h=Math.ceil(L.length/2),t=x=>`<table${c?` class="${c}"`:""}>${head}<tbody>${x.map(tr).join("")}</tbody></table>`;return t(L);const A=t(L.slice(0,h)),B=t(L.slice(h));return `<div class="cols">${A}${B}</div>`};const mainT=tbl(main);
   const grpT=groups.map(g=>`<div class="gsec"><div class="gh">${esc(g)}</div><table class="gt">${head}<tbody>${items.filter(i=>i.group===g&&!i.sep).map(tr).join("")}</tbody></table></div>`).join("");
   const sepT=seps.length?`<div class="gsec"><table class="st">${head}<tbody>${seps.map(tr).join("")}</tbody></table></div>`:"";
   const chemT=chem.length?`<div class="gsec2"><div class="ch">كيميكال</div>${tbl(chem,"ct")}</div>`:"";
