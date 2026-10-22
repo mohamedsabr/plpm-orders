@@ -158,6 +158,7 @@ h2.sec{font-size:.85rem;font-weight:600;color:var(--muted);margin:0 0 -6px;lette
 .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
 .btn.ok{background:var(--ok);color:#fff}
 .btn.danger{background:none;color:var(--bad);border:1px solid var(--line)}
+.btn.regprint{width:100%;margin:2px 0 6px;height:48px;font-size:1rem}.btn.regprint:disabled{opacity:.5}
 .btn.small{height:38px;padding:0 14px;font-size:.9rem}
 .danger-zone{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
 
@@ -427,12 +428,34 @@ function renderHome(){
 function sentSel(o){
   return `<select class="sent ${o.sent?"yes":"no"}" data-sent="${o.id}" aria-label="حالة إرسال ${esc(o.title)}"><option value="0" ${o.sent?"":"selected"}>لم يتم إرسالها</option><option value="1" ${o.sent?"selected":""}>تم إرسالها</option></select>`;
 }
+function regionBatch(){
+  const latest={};
+  saved().filter(o=>kindOf(o)===CHEM&&inRegion(o)&&filled(o).length&&(!coFilter||o.company===coFilter)).sort(byNewest)
+    .forEach(o=>{if(!latest[o.site])latest[o.site]=o});
+  const order=COMPANIES.flatMap(c=>BRANCHES[c]);const ix=s=>{const i=order.indexOf(s);return i<0?999:i};
+  return Object.values(latest).sort((a,b)=>ix(a.site)-ix(b.site));
+}
+function regPrintBtn(){
+  if(mode!==CHEM||!region)return "";
+  const n=regionBatch().length;
+  return `<button type="button" class="btn regprint" id="regPrint" ${n?"":"disabled"}>🖨️ طباعة كيميكال ${esc(region)}<span class="num"> (${ar(n)} ${n>2&&n<11?"فروع":"فرع"})</span></button>`;
+}
+function printRegion(){
+  const L=regionBatch();if(!L.length){toast("مفيش طلبيات كيميكال في "+region);return}
+  const docs=L.map(receiptHtml);
+  const style=docs[0].match(/<style>[\s\S]*?<\/style>/)[0];
+  const body=d=>d.split("<body>")[1].split("<script>")[0];
+  const html=`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>كيميكال ${esc(region)}</title>${style}<style>.pg{page-break-after:always;break-after:page}.pg:last-child{page-break-after:auto;break-after:auto}</style></head><body>`
+    +docs.map(d=>`<div class="pg">${body(d)}</div>`).join("")
+    +`<script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>`;
+  printHtml(html,"كيميكال "+region);
+}
 function regionChips(){
   return `<div class="chips region">${[["","كل المناطق"],...REGIONS.map(r=>[r,r])].map(([k,l])=>`<button type="button" class="chip" data-region="${k}" aria-pressed="${region===k}">${l}</button>`).join("")}</div>`;
 }
 function modeSwitch(){
   return regionChips()+`<div class="tabs mode" role="tablist">${CATS.map(c=>{const n=saved().filter(o=>kindOf(o)===c&&inRegion(o)&&filled(o).length&&(!coFilter||o.company===coFilter)).length;
-    return `<button type="button" role="tab" class="tabb" data-mode="${c}" aria-selected="${mode===c}"><b>${c}</b><span class="num">${ar(n)} طلبية</span></button>`}).join("")}</div>`;
+    return `<button type="button" role="tab" class="tabb" data-mode="${c}" aria-selected="${mode===c}"><b>${c}</b><span class="num">${ar(n)} طلبية</span></button>`}).join("")}</div>`+regPrintBtn();
 }
 function rowHtml(o,mode){
   return `<div class="rrow" role="button" tabindex="0" data-${mode||"open"}="${o.id}"><span class="rdate num">${shortDate(o.date)}</span>
@@ -684,6 +707,7 @@ document.addEventListener("click",e=>{
   if(d.trow!=null){tOpen.has(d.trow)?tOpen.delete(d.trow):tOpen.add(d.trow);render();return}
   if(t.id==="tPrint"){printHtml(totalsHtml(),"إجمالي "+mode+(region?" - "+region:"")+" - "+periodLabel());return}
   if(t.id==="tWa"){copyText(totalsWa());return}
+  if(t.closest&&t.closest("#regPrint")){printRegion();return}
   if(d.region!=null){region=d.region;try{localStorage.setItem("ord.region",region)}catch(_){}render();return}
   if(d.mode!=null){mode=d.mode;try{localStorage.setItem("ord.mode",mode)}catch(_){}hOpen.clear();render();return}
   if(d.site!=null){openBranch(d.site);return}
