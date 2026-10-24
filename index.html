@@ -585,13 +585,13 @@ function totalsData(){
   }));
   const order=new Map();CATS.forEach(c=>CATALOG[c].forEach((e,k)=>order.set(e.name||e,order.size)));
   let rows=[...map.values()];
-  rows.sort(tSort==="qty"?(a,b)=>b.sum-a.sum:tSort==="name"?(a,b)=>a.name.localeCompare(b.name,"ar"):(a,b)=>(order.get(a.name)??1e9)-(order.get(b.name)??1e9));
   const pre=adjPrefix();
   Object.entries(adjRec.adj||{}).forEach(([k,v])=>{if(!k.startsWith(pre))return;const n=k.slice(pre.length);
     let r=rows.find(x=>x.name===n);
     if(!r){if(!(v.q>0))return;r={name:n,dept:deptOf(n),units:{},by:{},sum:0,extra:true};rows.push(r)}
     r.calc=r.units;r.units=v.q>0?{[v.u||""]:v.q}:{};r.sum=v.q;r.adj=true;});
   rows=rows.filter(r=>r.sum>0||r.adj&&!r.extra);
+  rows.sort(tSort==="qty"?(a,b)=>b.sum-a.sum:tSort==="name"?(a,b)=>a.name.localeCompare(b.name,"ar"):(a,b)=>(order.get(a.name)??1e9)-(order.get(b.name)??1e9));
   rows.sort((a,b)=>DEPTS.indexOf(a.dept)-DEPTS.indexOf(b.dept));
   const deptN=Object.fromEntries(DEPTS.map(d=>[d,rows.filter(r=>r.dept===d).length]));
   if(tDept)rows=rows.filter(r=>r.dept===tDept);
