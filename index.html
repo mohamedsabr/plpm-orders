@@ -86,6 +86,11 @@ h2.sec{font-size:.85rem;font-weight:600;color:var(--muted);margin:0 0 -6px;lette
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .tools .search{flex:1 1 180px}
 .tlist{list-style:none;margin:0;padding:0}
+.tq.adj,.mt.adj{color:#b45309}.tq.adj::before{content:"✎ ";font-size:.8em}
+.adjbox{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:4px 16px 10px}.adjbox label{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.9rem}
+.adjq{width:90px;height:38px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);text-align:center;font-size:1rem;font-weight:700}
+.adjc{font-size:.82rem;color:var(--mute,#888)}.adjx{width:auto;padding:4px 8px}
+.adjadd{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}.adjadd input[name=n]{flex:1;min-width:160px}.adjadd input,.adjadd select{height:38px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:0 10px}.adjadd input[name=q]{width:80px}
 .dhead{font-weight:800;padding:8px 16px;font-size:.95rem;color:#fff}.dhead td{padding:8px 12px!important;text-align:right!important;font-weight:800;color:#fff}
 .dhead.d0,.dhead.d0 td{background:#b45309}.dhead.d1,.dhead.d1 td{background:#1f3fa8}.dhead.d2,.dhead.d2 td{background:#0f766e}
 .trow{border-bottom:1px solid var(--line)}.trow:last-child{border-bottom:0}
@@ -305,6 +310,11 @@ const inRegion=o=>!region||regionOf(o.site)===region;
 const ofMode=o=>kindOf(o)===mode&&inRegion(o);
 if(coFilter&&!COMPANIES.includes(coFilter))coFilter="";
 const saved=()=>orders.filter(o=>!o.unsaved);
+/* تعديلات الإجمالي (الكميات اللي بتتطلب فعلاً من المورد) — متخزنة في سجل خاص __adj */
+let adjRec={id:"__adj",title:"تعديلات الإجمالي",items:[],adj:{}};
+const adjKey=name=>{const {m,pm}=periodRange();return [tPeriod==="all"?"all":tPeriod==="month"?m:pm,mode,region||"*",coFilter||"*",name].join("|")};
+const adjPrefix=()=>adjKey("");
+function setAdj(name,q,u){const k=adjKey(name);if(q==null||q==="")delete adjRec.adj[k];else adjRec.adj[k]={q:+q,u:u||""};persist(adjRec);render()}
 const byNewest=(a,b)=>(b.date||"").localeCompare(a.date||"")||(b.createdAt||0)-(a.createdAt||0);
 const cur=()=>orders.find(o=>o.id===curId);
 
@@ -325,6 +335,8 @@ function flush(){for(const id in timers){clearTimeout(timers[id]);delete timers[
 const typing=()=>{const a=document.activeElement;return a&&a.tagName==="INPUT"&&a.closest("#app")};
 function merge(list){
   const local=new Map(orders.map(o=>[o.id,o]));
+  const meta=list.find(b=>b.id==="__adj");if(meta&&!timers.__adj&&(meta.updatedAt||0)>=(adjRec.updatedAt||0))adjRec={...meta,adj:meta.adj||{}};
+  list=list.filter(b=>!String(b.id).startsWith("__"));
   orders=list.map(b=>{b.items=b.items||[];if(RENAME[b.site]){b.title=(b.title||"").replace(b.site,RENAME[b.site]);b.site=RENAME[b.site]}if(!b.company&&SITE_CO[b.site])b.company=SITE_CO[b.site];b.items.forEach(normItem);const m=local.get(b.id);return m&&((m.updatedAt||0)>(b.updatedAt||0)||timers[b.id])?m:b});
   local.forEach(o=>{if(o.unsaved&&!orders.some(x=>x.id===o.id))orders.push(o)});
   ready=true;
@@ -574,6 +586,12 @@ function totalsData(){
   const order=new Map();CATS.forEach(c=>CATALOG[c].forEach((e,k)=>order.set(e.name||e,order.size)));
   let rows=[...map.values()];
   rows.sort(tSort==="qty"?(a,b)=>b.sum-a.sum:tSort==="name"?(a,b)=>a.name.localeCompare(b.name,"ar"):(a,b)=>(order.get(a.name)??1e9)-(order.get(b.name)??1e9));
+  const pre=adjPrefix();
+  Object.entries(adjRec.adj||{}).forEach(([k,v])=>{if(!k.startsWith(pre))return;const n=k.slice(pre.length);
+    let r=rows.find(x=>x.name===n);
+    if(!r){if(!(v.q>0))return;r={name:n,dept:deptOf(n),units:{},by:{},sum:0,extra:true};rows.push(r)}
+    r.calc=r.units;r.units=v.q>0?{[v.u||""]:v.q}:{};r.sum=v.q;r.adj=true;});
+  rows=rows.filter(r=>r.sum>0||r.adj&&!r.extra);
   rows.sort((a,b)=>DEPTS.indexOf(a.dept)-DEPTS.indexOf(b.dept));
   const deptN=Object.fromEntries(DEPTS.map(d=>[d,rows.filter(r=>r.dept===d).length]));
   if(tDept)rows=rows.filter(r=>r.dept===tDept);
@@ -594,10 +612,12 @@ function renderTotals(){
       return `<li class="trow${open?" open":""}"><button type="button" class="thead" data-trow="${esc(r.name)}" aria-expanded="${open}">
         <span class="tn">${esc(r.name)}<small>${ar(bs.length)} فرع</small></span>
         <span class="tbar"><i style="width:${Math.max(3,r.sum/max*100)}%"></i></span>
-        <b class="tq num">${unitsTxt(r.units)}</b></button>
-        ${open?`<ul class="tby">${bs.map(([s,u])=>`<li><span>${esc(s)}</span><b class="num">${unitsTxt(u)}</b></li>`).join("")}</ul>`:""}</li>`})()).join("")||`<li class="empty">مفيش صنف بالاسم ده</li>`}</ul>`;
+        <b class="tq num${r.adj?" adj":""}">${unitsTxt(r.units)}</b></button>
+        ${open?`<div class="adjbox"><label>المطلوب من المورد <input type="number" inputmode="numeric" min="0" class="adjq" data-adjn="${esc(r.name)}" data-adju="${esc(Object.keys(r.calc||r.units)[0]||"")}" value="${r.adj?r.sum:""}" placeholder="${esc(unitsTxt(r.calc||r.units)||"٠")}"></label>
+          ${r.adj?`<span class="adjc">المحسوب من الفروع: <b class="num">${r.extra?"—":unitsTxt(r.calc)||"٠"}</b></span><button type="button" class="linkbtn adjx" data-adjclr="${esc(r.name)}">رجّع المحسوب</button>`:`<span class="adjc">اكتب العدد اللي هيتطلب فعلاً</span>`}</div>
+          <ul class="tby">${bs.map(([s,u])=>`<li><span>${esc(s)}</span><b class="num">${unitsTxt(u)}</b></li>`).join("")}</ul>`:""}</li>`})()).join("")||`<li class="empty">مفيش صنف بالاسم ده</li>`}</ul>`;
   }else{
-    body=`<div class="mwrap"><table class="matrix"><thead><tr><th class="mn">الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th class="mt">الإجمالي</th></tr></thead><tbody>${shown.map((r,k)=>dh(r,k,shown,d=>`<tr class="dhead d${DEPTS.indexOf(d)}"><td colspan="${sites.length+2}">${esc(d)}</td></tr>`)+`<tr><td class="mn">${esc(r.name)}</td>${sites.map(s=>`<td class="num">${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td class="mt num">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table></div>`;
+    body=`<div class="mwrap"><table class="matrix"><thead><tr><th class="mn">الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th class="mt">الإجمالي</th></tr></thead><tbody>${shown.map((r,k)=>dh(r,k,shown,d=>`<tr class="dhead d${DEPTS.indexOf(d)}"><td colspan="${sites.length+2}">${esc(d)}</td></tr>`)+`<tr><td class="mn">${esc(r.name)}</td>${sites.map(s=>`<td class="num">${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td class="mt num${r.adj?" adj":""}">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table></div>`;
   }
   return topBar("الإجمالي")+`
   ${modeSwitch(true)}
@@ -613,6 +633,7 @@ function renderTotals(){
     ${chips([["qty","الأكتر"],["cat","ترتيب القائمة"],["name","أبجدي"]],tSort,"data-tsort")}
   </div>
   <div class="card">${body}</div>
+  <form class="adjadd" id="adjAdd"><input name="n" placeholder="صنف زيادة مش في الطلبيات…" autocomplete="off" required><input name="q" type="number" inputmode="numeric" min="1" placeholder="العدد" required><select name="u">${UNITS.map(u=>`<option value="${u}">${u||"قطعة"}</option>`).join("")}</select><button class="btn small">ضيف</button></form>
   ${rows.length?`<div class="danger-zone"><button type="button" class="btn" id="tPrint">طباعة الإجمالي</button><button type="button" class="btn ghost" id="tWa">انسخ للواتساب</button></div>`:""}`;
 }
 function totalsHtml(){
@@ -725,6 +746,7 @@ document.addEventListener("click",e=>{
   if(d.ts!=null){tSent=d.ts;render();return}
   if(d.tv!=null){tView=d.tv;render();return}
   if(d.tsort!=null){tSort=d.tsort;render();return}
+  if(d.adjclr!=null){setAdj(d.adjclr,null);return}
   if(d.trow!=null){tOpen.has(d.trow)?tOpen.delete(d.trow):tOpen.add(d.trow);render();return}
   if(t.id==="tPrint"){printHtml(totalsHtml(),"إجمالي "+mode+(region?" - "+region:"")+" - "+periodLabel());return}
   if(t.id==="tWa"){copyText(totalsWa());return}
@@ -759,6 +781,8 @@ document.addEventListener("click",e=>{
   if(t.id==="noDel"){confirmDel=false;render();return}
   if(t.id==="yesDel"){const id=o.id;orders=orders.filter(x=>x.id!==id);if(!o.unsaved)store.del(id).catch(()=>toast("الحذف ما تمّش"));go("home");toast("الطلبية اتحذفت");return}
 });
+document.addEventListener("change",e=>{const el=e.target;if(el.classList&&el.classList.contains("adjq")){setAdj(el.dataset.adjn,el.value===""?null:Math.max(0,+el.value),el.dataset.adju)}});
+document.addEventListener("submit",e=>{if(e.target.id!=="adjAdd")return;e.preventDefault();const f=e.target;const n=f.n.value.trim(),q=+f.q.value;if(!n||!(q>0))return;tOpen.add(n);setAdj(n,q,f.u.value)});
 document.addEventListener("input",e=>{
   const el=e.target;
   if(el.id==="tQ"){tQ=el.value;const p=el.selectionStart;render();const n=$("#tQ");n.focus();n.setSelectionRange(p,p);return}
