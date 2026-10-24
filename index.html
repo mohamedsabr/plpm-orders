@@ -236,11 +236,11 @@ const CATALOG={
     "يد معدن","يد معدن تقيل","يد معدن للشرشوبة","يد معدن ألوان","يد معدن أخضر","يد سوداء","يد أحمر","يد أخضر","يد موب",
     "مساحة معدن","مساحة بلاستيك كلاسيك","مساحة بلاستيك حمراء",
     "جاروف قلاب","جاروف أزرق","جاروف أخضر","جاروف أحمر",
-    "فرش موب","فرش موب أحمر","فرش موب أخضر","فرش موب أزرق","عضم موب","شرشوبة",
+    "فرش موب","فرش موب أحمر","فرش موب أخضر","فرش موب أزرق","عضم موب","عضم موب أحمر","عضم موب أزرق","عضم موب أخضر","شرشوبة",
     "بلة كاملة","غيار بلة",
     "فوط مايكروفايبر","فوط مايكروفايبر أحمر","فوط مايكروفايبر أخضر","فوط مايكروفايبر أصفر","فوط مايكروفايبر أزرق",
     "فوطة مايكروفايبر 3M","فوط قطن","فوط قطن خضراء","فوط قطن حمراء","فوط قطن زرقاء","فوط عش نملة","فوط أرضيات","طرحة سوداء",
-    "إكسويزر 25 سم","إكسويزر 35 سم","إكسويزر بلاستيك","إكسويزر أحمر بلاستيك","غيار جلد إكسويزر 25 سم","غيار جلد إكسويزر إيطالي 35 سم","غيار جلد إكسويزر إيطالي 45 سم",
+    "إكسويزر 25 سم","إكسويزر 35 سم","إكسويزر بلاستيك","غيار جلد إكسويزر 25 سم","غيار جلد إكسويزر إيطالي 35 سم","غيار جلد إكسويزر إيطالي 45 سم",
     "سبونشة خشنة","سبونشة لباد",{name:"سلك مواعين",unit:"لفة"},
     "فرشة مكوي","فرشة أرضيات","فرشة قواعد","زعافة كورة",
     "جردل 18 لتر","جردل بلاستيك","اسكليبر","سكينة معجون","تليسكوب 9 متر","علامة صفراء","حذاء بلاستيك","فيشة دكر","فيشة نتاية","شريط لحام"
@@ -248,11 +248,11 @@ const CATALOG={
   [CHEM]:[{"name": "هاند سوب", "unit": "لتر"}, {"name": "انفراتول", "unit": "كرتونة"}, {"name": "تكنوبلاس", "unit": "عبوة"}, {"name": "فريبرز", "unit": "كرتونة"}, {"name": "أوفين", "unit": "كرتونة"}, {"name": "نت", "unit": "كرتونة"}, {"name": "ماجيك", "unit": "عبوة"}, {"name": "روما", "unit": "عبوة"}, {"name": "راستك", "unit": "عبوة"}, {"name": "ملمع زجاج", "unit": "عبوة"}, {"name": "ملمع جلد", "unit": "عبوة"}, {"name": "ملمع معادن", "unit": "عبوة"}, {"name": "ملمع نحاس", "unit": "عبوة"}, {"name": "هيلجا", "unit": "لتر"}, {"name": "R.G.L", "unit": "لتر"}, {"name": "امبسادور", "unit": "كيلو"}, {"name": "أكسجين", "unit": "لتر"}, {"name": "بريموتك", "unit": "لتر"}, {"name": "سيفتي", "unit": "لتر"}, {"name": "دبل زد", "unit": "كرتونة"}, {"name": "ديسكلر", "unit": "كرتونة"}, {"name": "سكرابنج كريم", "unit": "عبوة"}, {"name": "سباركل بلس", "unit": "كرتونة"}, {"name": "تك تك", "unit": "عبوة"}, {"name": "وود تك", "unit": "عبوة"}, {"name": "مزيل أسمنت", "unit": "عبوة"}, {"name": "مزيل أملاح", "unit": "كرتونة"}, {"name": "كلور", "unit": "كرتونة"}, {"name": "معطر فريدا", "unit": "كرتونة"}, {"name": "معطر مسك", "unit": "كرتونة"}, {"name": "معطر فريش لايت", "unit": "كرتونة"}, "بخاخة فارغة"]
 };
 const CHEM_NAMES=new Set(CATALOG[CHEM].map(e=>e.name||e));
-const ITEM_RENAME={"شريط الحمام":"شريط لحام","شريط الخام":"شريط لحام","مساحة بلاستيك":"مساحة بلاستيك كلاسيك","يد معدن الوايبر":"يد معدن ألوان","عضم موب أحمر":"عضم موب","عضم موب أزرق":"عضم موب","عضم موب أخضر":"عضم موب","فوط أرضية":"فوط أرضيات","فرشة موب أحمر":"فرش موب أحمر","فرشة موب أزرق":"فرش موب أزرق","مساحة حديد":"مساحة معدن","نتاية":"فيشة نتاية","راسك":"راستك","RGL":"R.G.L","يد شرشوبة":"يد معدن للشرشوبة","غيار جلد إيطالي 35 سم":"غيار جلد إكسويزر إيطالي 35 سم","جلد إكسويزر إيطالي 35 سم":"غيار جلد إكسويزر إيطالي 35 سم","جلد إكسويزر إيطالي 45 سم":"غيار جلد إكسويزر إيطالي 45 سم"};
+const ITEM_RENAME={"إكسويزر أحمر بلاستيك":"إكسويزر بلاستيك","شريط الحمام":"شريط لحام","شريط الخام":"شريط لحام","مساحة بلاستيك":"مساحة بلاستيك كلاسيك","يد معدن الوايبر":"يد معدن ألوان","فوط أرضية":"فوط أرضيات","فرشة موب أحمر":"فرش موب أحمر","فرشة موب أزرق":"فرش موب أزرق","مساحة حديد":"مساحة معدن","نتاية":"فيشة نتاية","راسك":"راستك","RGL":"R.G.L","يد شرشوبة":"يد معدن للشرشوبة","غيار جلد إيطالي 35 سم":"غيار جلد إكسويزر إيطالي 35 سم","جلد إكسويزر إيطالي 35 سم":"غيار جلد إكسويزر إيطالي 35 سم","جلد إكسويزر إيطالي 45 سم":"غيار جلد إكسويزر إيطالي 45 سم"};
 /* الأقسام: أي صنف مش مكتوب هنا يبقى "المورد" */
 const DEPTS=["شراء من الخارج","المورد","المخازن"];
 const DEPT_MAP={
-  "شراء من الخارج":["جاروف أخضر","شرشوبة بيد معدن","فيشة دكر","فيشة نتاية","كوتش رجالي","شريط لحام","كيس قفيز 20 سم","كوتش حريمي مقاس 37:40","سلك خشنة","إكسويزر بلاستيك","إكسويزر أحمر بلاستيك","حذاء بلاستيك","معطر جهاز","حجر انرجايزر","سلك مواعين","طرحة سوداء"],
+  "شراء من الخارج":["جاروف أخضر","شرشوبة بيد معدن","فيشة دكر","فيشة نتاية","كوتش رجالي","شريط لحام","كيس قفيز 20 سم","كوتش حريمي مقاس 37:40","سلك خشنة","إكسويزر بلاستيك","حذاء بلاستيك","معطر جهاز","حجر انرجايزر","سلك مواعين","طرحة سوداء"],
   "المخازن":["كافروما","فرش موب","فرش موب أحمر","فرش موب أخضر","فرش موب أزرق","فوط قطن","فوط قطن زرقاء","فوط قطن حمراء","فوط قطن خضراء","جاروف أحمر","مقشة خضراء","مقشة سوداء","جاروف أزرق","يد موب"]
 };
 const DEPT_OF=Object.fromEntries(Object.entries(DEPT_MAP).flatMap(([d,L])=>L.map(n=>[n,d])));
@@ -340,9 +340,25 @@ function merge(list){
   orders=list.map(b=>{b.items=b.items||[];if(RENAME[b.site]){b.title=(b.title||"").replace(b.site,RENAME[b.site]);b.site=RENAME[b.site]}if(!b.company&&SITE_CO[b.site])b.company=SITE_CO[b.site];b.items.forEach(normItem);{const seen=new Map();b.items=b.items.filter(i=>{if(i.group||i.sep)return true;const f=seen.get(i.name);if(f){f.qty=(+f.qty||0)+(+i.qty||0);if(!f.unit&&i.unit)f.unit=i.unit;return false}seen.set(i.name,i);return true})}const m=local.get(b.id);return m&&((m.updatedAt||0)>(b.updatedAt||0)||timers[b.id])?m:b});
   local.forEach(o=>{if(o.unsaved&&!orders.some(x=>x.id===o.id))orders.push(o)});
   ready=true;
+  runPatches();
   if(view==="order"&&typing())renderFoot();else render();
 }
 
+/* تعديلات بيانات بتتنفذ مرة واحدة (متسجلة في سجل __adj) */
+function runPatches(){
+  if(BACKEND!=="fetch"&&BACKEND!=="gas")return;
+  const done=adjRec.done||(adjRec.done=[]);if(done.includes("p1"))return;
+  const T="أدوات نظافة",it=(o,n)=>o&&o.items.find(i=>i.name===n&&!i.group&&!i.sep);
+  const put=(o,n,q)=>{let i=it(o,n);if(!i){i={id:uid(),name:n,qty:0,got:0,cat:T};o.items.push(i)}i.qty=q};
+  const mm=orders.find(o=>o.id==="mallmasr-1017");
+  if(mm&&!it(mm,"عضم موب أحمر")?.qty&&+(it(mm,"عضم موب")||{}).qty===20){put(mm,"عضم موب",0);put(mm,"عضم موب أحمر",10);put(mm,"عضم موب أزرق",5);put(mm,"عضم موب أخضر",5);persist(mm)}
+  const ak=orders.find(o=>o.id==="arkan-1019");
+  if(ak&&+(it(ak,"عضم موب")||{}).qty===6&&!it(ak,"عضم موب أزرق")?.qty){put(ak,"عضم موب",0);put(ak,"عضم موب أزرق",6);persist(ak)}
+  const A=adjRec.adj||(adjRec.adj={});
+  delete A["2026-10|أدوات نظافة|أكتوبر|*|عضم موب"];delete A["2026-10|أدوات نظافة|التجمع|*|عضم موب"];
+  A["2026-10|أدوات نظافة|التجمع|*|سلك مواعين"]={q:3,u:"لفة"};
+  done.push("p1");persist(adjRec);render();
+}
 async function boot(){
   if(BACKEND==="claude"){
     let db=null;try{db=window.claude&&window.claude.use?await window.claude.use("db"):null}catch(e){}
@@ -634,7 +650,24 @@ function renderTotals(){
   </div>
   <div class="card">${body}</div>
   <form class="adjadd" id="adjAdd"><input name="n" placeholder="صنف زيادة مش في الطلبيات…" autocomplete="off" required><input name="q" type="number" inputmode="numeric" min="1" placeholder="العدد" required><select name="u">${UNITS.map(u=>`<option value="${u}">${u||"قطعة"}</option>`).join("")}</select><button class="btn small">ضيف</button></form>
-  ${rows.length?`<div class="danger-zone"><button type="button" class="btn" id="tPrint">طباعة الإجمالي</button><button type="button" class="btn ghost" id="tWa">انسخ للواتساب</button></div>`:""}`;
+  ${rows.length?`<div class="danger-zone"><button type="button" class="btn" id="tPrint">طباعة الإجمالي</button><button type="button" class="btn" id="tSup">طباعة مورد</button><button type="button" class="btn ghost" id="tWa">انسخ للواتساب</button></div>`:""}`;
+}
+const famIdx=(()=>{const L=CATALOG[TOOLS].concat(CATALOG[CHEM]).map(e=>e.name||e);const first=n=>n.split(" ")[0];
+  return n=>{let i=L.indexOf(n);if(i>=0)return i;const f=first(n);i=L.findIndex(x=>first(x)===f);return i>=0?i+.5:1e6}})();
+function supplierHtml(){
+  const keep=tDept;tDept="المورد";let rows;try{rows=totalsData().rows}finally{tDept=keep}
+  rows=rows.slice().sort((a,b)=>famIdx(a.name)-famIdx(b.name)||a.name.localeCompare(b.name,"ar"));
+  return `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>طلبية المورد - ${esc(mode)}${region?" - "+esc(region):""}</title>
+<style>@page{size:A4;margin:9mm 12mm}body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;color:#111;margin:0;font-size:13.5px}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1{text-align:center;color:#1f3fa8;font-size:22px;margin:0}.sub{text-align:center;color:#444;margin:2px 0 8px}
+.meta{display:flex;justify-content:space-between;border-bottom:2px solid #1f3fa8;padding-bottom:5px;margin-bottom:8px;font-size:13px}
+table{width:100%;border-collapse:collapse}th{background:#e6ebfa;color:#1f3fa8;padding:4px 8px;border:1px solid #c9d2ea;text-align:right;font-size:12.5px}
+td{border:1px solid #c9d2ea;padding:4px 8px}.n{width:32px;text-align:center;color:#666}.q{width:130px;text-align:center;font-weight:bold;font-size:14.5px}tr{page-break-inside:avoid}
+tr.f td{border-top:2px solid #1f3fa8}</style></head><body>
+<h1>طلبية المورد</h1><div class="sub">${esc(mode)}${region?" — "+esc(region):""} — ${esc(periodLabel())}</div>
+<div class="meta"><span>${esc(coFilter||"كل الشركات")}</span><span>${ar(rows.length)} صنف</span><span>التاريخ: ${fmtDate(today())}</span></div>
+<table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الكمية</th></tr></thead><tbody>${rows.map((r,k)=>`<tr${k&&r.name.split(" ")[0]!==rows[k-1].name.split(" ")[0]?' class="f"':""}><td class="n">${ar(k+1)}</td><td>${ar(esc(r.name))}</td><td class="q">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table>
+<script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>`;
 }
 function totalsHtml(){
   const {os,rows:allRows}=totalsData();
@@ -748,6 +781,7 @@ document.addEventListener("click",e=>{
   if(d.tsort!=null){tSort=d.tsort;render();return}
   if(d.adjclr!=null){setAdj(d.adjclr,null);return}
   if(d.trow!=null){tOpen.has(d.trow)?tOpen.delete(d.trow):tOpen.add(d.trow);render();return}
+  if(t.id==="tSup"){printHtml(supplierHtml(),"طلبية المورد - "+mode+(region?" - "+region:""));return}
   if(t.id==="tPrint"){printHtml(totalsHtml(),"إجمالي "+mode+(region?" - "+region:"")+" - "+periodLabel());return}
   if(t.id==="tWa"){copyText(totalsWa());return}
   if(t.closest&&t.closest("#regPrint")){printRegion();return}
