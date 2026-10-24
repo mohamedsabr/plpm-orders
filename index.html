@@ -657,16 +657,16 @@ const famIdx=(()=>{const L=CATALOG[TOOLS].concat(CATALOG[CHEM]).map(e=>e.name||e
 function supplierHtml(){
   const keep=tDept;tDept="المورد";let rows;try{rows=totalsData().rows}finally{tDept=keep}
   rows=rows.slice().sort((a,b)=>famIdx(a.name)-famIdx(b.name)||a.name.localeCompare(b.name,"ar"));
+  const N=rows.length,fs=N>56?9.5:N>44?10.5:N>38?11.5:12.5, pd=N>56?0:N>44?1:2;
   return `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>طلبية المورد - ${esc(mode)}${region?" - "+esc(region):""}</title>
-<style>@page{size:A4;margin:9mm 12mm}body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;color:#111;margin:0;font-size:13.5px}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-h1{text-align:center;color:#1f3fa8;font-size:22px;margin:0}.sub{text-align:center;color:#444;margin:2px 0 8px}
-.meta{display:flex;justify-content:space-between;border-bottom:2px solid #1f3fa8;padding-bottom:5px;margin-bottom:8px;font-size:13px}
-table{width:100%;border-collapse:collapse}th{background:#e6ebfa;color:#1f3fa8;padding:4px 8px;border:1px solid #c9d2ea;text-align:right;font-size:12.5px}
-td{border:1px solid #c9d2ea;padding:4px 8px}.n{width:32px;text-align:center;color:#666}.q{width:130px;text-align:center;font-weight:bold;font-size:14.5px}tr{page-break-inside:avoid}
-tr.f td{border-top:2px solid #1f3fa8}</style></head><body>
+<style>@page{size:A4;margin:7mm 12mm}body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;color:#111;margin:0;font-size:${fs}px}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1{text-align:center;color:#1f3fa8;font-size:19px;margin:0}.sub{text-align:center;color:#444;margin:1px 0 4px}
+.meta{display:flex;justify-content:space-between;border-bottom:2px solid #1f3fa8;padding-bottom:3px;margin-bottom:5px;font-size:12px}
+table{width:100%;border-collapse:collapse}th{background:#e6ebfa;color:#1f3fa8;padding:${pd}px 8px;border:1px solid #c9d2ea;text-align:right;font-size:12.5px}
+td{border:1px solid #c9d2ea;padding:${pd}px 8px}.n{width:30px;text-align:center;color:#666}.q{width:130px;text-align:center;font-weight:bold}tr{page-break-inside:avoid}</style></head><body>
 <h1>طلبية المورد</h1><div class="sub">${esc(mode)}${region?" — "+esc(region):""} — ${esc(periodLabel())}</div>
 <div class="meta"><span>${esc(coFilter||"كل الشركات")}</span><span>${ar(rows.length)} صنف</span><span>التاريخ: ${fmtDate(today())}</span></div>
-<table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الكمية</th></tr></thead><tbody>${rows.map((r,k)=>`<tr${k&&r.name.split(" ")[0]!==rows[k-1].name.split(" ")[0]?' class="f"':""}><td class="n">${ar(k+1)}</td><td>${ar(esc(r.name))}</td><td class="q">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table>
+<table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الكمية</th></tr></thead><tbody>${rows.map((r,k)=>`<tr><td class="n">${ar(k+1)}</td><td>${ar(esc(r.name))}</td><td class="q">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table>
 <script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>`;
 }
 function totalsHtml(){
