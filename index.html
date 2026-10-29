@@ -257,6 +257,8 @@ const DEPT_MAP={
 };
 const DEPT_OF=Object.fromEntries(Object.entries(DEPT_MAP).flatMap(([d,L])=>L.map(n=>[n,d])));
 const deptOf=n=>DEPT_OF[n]||"المورد";
+/* لو الصنف في طلبية معينة جاي من قسم غير المعتاد، بيتكتب له dept */
+const itemDept=i=>i.dept||deptOf(i.name);
 const UNITS=["","كرتونة","عبوة","لتر","كيلو","جالون","لفة","دستة"];
 const DEF_UNIT=Object.fromEntries(CATS.flatMap(c=>CATALOG[c].filter(e=>e.unit).map(e=>[e.name,e.unit])));
 function normItem(i){
@@ -595,7 +597,7 @@ function totalsData(){
     &&(tSent==="all"||(tSent==="sent"?!!o.sent:!o.sent)));
   const map=new Map();
   os.forEach(o=>filled(o).filter(i=>catOf(i)===mode).forEach(i=>{
-    let a=map.get(i.name);if(!a){a={name:i.name,dept:deptOf(i.name),units:{},by:{},sum:0};map.set(i.name,a)}
+    const dp=itemDept(i),ky=i.name+"|"+dp;let a=map.get(ky);if(!a){a={name:i.name,dept:dp,units:{},by:{},sum:0};map.set(ky,a)}
     const u=i.unit||"";a.units[u]=(a.units[u]||0)+qtyOf(i);a.sum+=qtyOf(i);
     const b=a.by[o.site]||(a.by[o.site]={});b[u]=(b[u]||0)+qtyOf(i);
   }));
@@ -611,7 +613,7 @@ function totalsData(){
   rows.sort((a,b)=>DEPTS.indexOf(a.dept)-DEPTS.indexOf(b.dept));
   const deptN=Object.fromEntries(DEPTS.map(d=>[d,rows.filter(r=>r.dept===d).length]));
   if(tDept)rows=rows.filter(r=>r.dept===tDept);
-  const sites=[...new Set(os.filter(o=>!tDept||filled(o).some(i=>deptOf(i.name)===tDept&&catOf(i)===mode)).map(o=>o.site))].sort((a,b)=>SITES.indexOf(a)-SITES.indexOf(b));
+  const sites=[...new Set(os.filter(o=>!tDept||filled(o).some(i=>itemDept(i)===tDept&&catOf(i)===mode)).map(o=>o.site))].sort((a,b)=>SITES.indexOf(a)-SITES.indexOf(b));
   return {os,rows,sites,deptN};
 }
 const unitsTxt=u=>Object.entries(u).map(([k,q])=>ar(q)+(k?" "+k:"")).join(" + ");
