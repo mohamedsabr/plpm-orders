@@ -132,6 +132,7 @@ h2.sec{font-size:.85rem;font-weight:600;color:var(--muted);margin:0 0 -6px;lette
 .date-in{border:1px solid var(--line);background:var(--card);border-radius:10px;height:40px;padding:0 10px}
 .search{display:block;flex:1;min-width:150px;-webkit-appearance:none;appearance:none;min-height:40px;border:1px solid var(--line);background:var(--card);border-radius:10px;height:40px;padding:0 12px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tn .sz,.mn .sz{font-size:1.15em}.tn .nt,.mn .nt{font-weight:400;opacity:.75;font-size:.9em}
 .kindbar{align-self:flex-start;font-weight:700;font-size:.85rem;padding:4px 12px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
 .kindbar.chem{background:#efe9fd;color:#6d28d9}
 .tabs.mode .tabb[aria-selected="true"]{box-shadow:0 0 0 2px var(--accent) inset}
@@ -252,7 +253,7 @@ const ITEM_RENAME={"إكسويزر أحمر بلاستيك":"إكسويزر بل
 /* الأقسام: أي صنف مش مكتوب هنا يبقى "المورد" */
 const DEPTS=["شراء من الخارج","المورد","المخازن"];
 const DEPT_MAP={
-  "شراء من الخارج":["جاروف أخضر","شرشوبة بيد معدن","فيشة دكر","فيشة نتاية","كوتش رجالي","شريط لحام","كيس قفيز 20 سم","كوتش حريمي مقاس 37:40","سلك خشنة","إكسويزر بلاستيك","حذاء بلاستيك","معطر جهاز","حجر انرجايزر","سلك مواعين","طرحة سوداء"],
+  "شراء من الخارج":["جاروف أخضر","شرشوبة بيد معدن","فيشة دكر","فيشة نتاية","كوتش رجالي","شريط لحام","كيس قفيز 20 سم","كوتش حريمي مقاس 37:40","سلك خشنة","إكسويزر بلاستيك","حذاء بلاستيك","معطر جهاز","حجر انرجايزر","كوركس","سلك مواعين","طرحة سوداء"],
   "المخازن":["كافروما","فرش موب","فرش موب أحمر","فرش موب أخضر","فرش موب أزرق","فوط قطن","فوط قطن زرقاء","فوط قطن حمراء","فوط قطن خضراء","جاروف أحمر","مقشة خضراء","مقشة سوداء","جاروف أزرق","يد موب"]
 };
 const DEPT_OF=Object.fromEntries(Object.entries(DEPT_MAP).flatMap(([d,L])=>L.map(n=>[n,d])));
@@ -288,6 +289,8 @@ const LOGOS={"شركة الشروق":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQA
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ar=n=>String(n??"").replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+/* اسم الصنف للعرض: المقاس (٢٥ سم / ٣٥ سم) بخط عريض + الملاحظة لو موجودة */
+const nameHtml=r=>ar(esc(r.name)).replace(/([٠-٩]+\s*سم)/g,'<b class="sz">$1</b>')+(r.note?` <span class="nt">(${esc(r.note)})</span>`:"");
 const toLatin=s=>String(s).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d));
 const uid=()=>Math.random().toString(36).slice(2,10);
 const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
@@ -597,7 +600,7 @@ function totalsData(){
     &&(tSent==="all"||(tSent==="sent"?!!o.sent:!o.sent)));
   const map=new Map();
   os.forEach(o=>filled(o).filter(i=>catOf(i)===mode).forEach(i=>{
-    const dp=itemDept(i),ky=i.name+"|"+dp;let a=map.get(ky);if(!a){a={name:i.name,dept:dp,units:{},by:{},sum:0};map.set(ky,a)}
+    const dp=itemDept(i),ky=i.name+"|"+dp;let a=map.get(ky);if(!a){a={name:i.name,dept:dp,units:{},by:{},sum:0};map.set(ky,a)}if(i.note&&!a.note)a.note=i.note;
     const u=i.unit||"";a.units[u]=(a.units[u]||0)+qtyOf(i);a.sum+=qtyOf(i);
     const b=a.by[o.site]||(a.by[o.site]={});b[u]=(b[u]||0)+qtyOf(i);
   }));
@@ -628,14 +631,14 @@ function renderTotals(){
   else if(tView==="list"){
     body=`<ul class="tlist">${shown.map((r,k)=>dh(r,k,shown,d=>`<li class="dhead d${DEPTS.indexOf(d)}">${esc(d)}</li>`)+(()=>{const open=tOpen.has(r.name);const bs=Object.entries(r.by).sort((a,b)=>Object.values(b[1]).reduce((x,y)=>x+y,0)-Object.values(a[1]).reduce((x,y)=>x+y,0));
       return `<li class="trow${open?" open":""}"><button type="button" class="thead" data-trow="${esc(r.name)}" aria-expanded="${open}">
-        <span class="tn">${esc(r.name)}<small>${ar(bs.length)} فرع</small></span>
+        <span class="tn">${nameHtml(r)}<small>${ar(bs.length)} فرع</small></span>
         <span class="tbar"><i style="width:${Math.max(3,r.sum/max*100)}%"></i></span>
         <b class="tq num${r.adj?" adj":""}">${unitsTxt(r.units)}</b></button>
         ${open?`<div class="adjbox"><label>المطلوب من المورد <input type="number" inputmode="numeric" min="0" class="adjq" data-adjn="${esc(r.name)}" data-adju="${esc(Object.keys(r.calc||r.units)[0]||"")}" value="${r.adj?r.sum:""}" placeholder="${esc(unitsTxt(r.calc||r.units)||"٠")}"></label>
           ${r.adj?`<span class="adjc">المحسوب من الفروع: <b class="num">${r.extra?"—":unitsTxt(r.calc)||"٠"}</b></span><button type="button" class="linkbtn adjx" data-adjclr="${esc(r.name)}">رجّع المحسوب</button>`:`<span class="adjc">اكتب العدد اللي هيتطلب فعلاً</span>`}</div>
           <ul class="tby">${bs.map(([s,u])=>`<li><span>${esc(s)}</span><b class="num">${unitsTxt(u)}</b></li>`).join("")}</ul>`:""}</li>`})()).join("")||`<li class="empty">مفيش صنف بالاسم ده</li>`}</ul>`;
   }else{
-    body=`<div class="mwrap"><table class="matrix"><thead><tr><th class="mn">الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th class="mt">الإجمالي</th></tr></thead><tbody>${shown.map((r,k)=>dh(r,k,shown,d=>`<tr class="dhead d${DEPTS.indexOf(d)}"><td colspan="${sites.length+2}">${esc(d)}</td></tr>`)+`<tr><td class="mn">${esc(r.name)}</td>${sites.map(s=>`<td class="num">${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td class="mt num${r.adj?" adj":""}">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table></div>`;
+    body=`<div class="mwrap"><table class="matrix"><thead><tr><th class="mn">الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th class="mt">الإجمالي</th></tr></thead><tbody>${shown.map((r,k)=>dh(r,k,shown,d=>`<tr class="dhead d${DEPTS.indexOf(d)}"><td colspan="${sites.length+2}">${esc(d)}</td></tr>`)+`<tr><td class="mn">${nameHtml(r)}</td>${sites.map(s=>`<td class="num">${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td class="mt num${r.adj?" adj":""}">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table></div>`;
   }
   return topBar("الإجمالي")+`
   ${modeSwitch(true)}
@@ -658,25 +661,25 @@ const famIdx=(()=>{const L=CATALOG[TOOLS].concat(CATALOG[CHEM]).map(e=>e.name||e
   return n=>{let i=L.indexOf(n);if(i>=0)return i;const f=first(n);i=L.findIndex(x=>first(x)===f);return i>=0?i+.5:1e6}})();
 function supplierHtml(){
   const keep=tDept;tDept="المورد";let rows;try{rows=totalsData().rows}finally{tDept=keep}
-  rows=rows.slice().sort((a,b)=>famIdx(a.name)-famIdx(b.name)||a.name.localeCompare(b.name,"ar"));
+  rows=rows.filter(r=>r.sum>0).sort((a,b)=>famIdx(a.name)-famIdx(b.name)||a.name.localeCompare(b.name,"ar"));
   const N=rows.length,fs=N>56?9.5:N>44?10.5:N>38?11.5:12.5, pd=N>56?0:N>44?1:2;
   return `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>طلبية المورد - ${esc(mode)}${region?" - "+esc(region):""}</title>
 <style>@page{size:A4;margin:7mm 12mm}body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;color:#111;margin:0;font-size:${fs}px}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 h1{text-align:center;color:#1f3fa8;font-size:19px;margin:0}.sub{text-align:center;color:#444;margin:1px 0 4px}
 .meta{display:flex;justify-content:space-between;border-bottom:2px solid #1f3fa8;padding-bottom:3px;margin-bottom:5px;font-size:12px}
 table{width:100%;border-collapse:collapse}th{background:#e6ebfa;color:#1f3fa8;padding:${pd}px 8px;border:1px solid #c9d2ea;text-align:right;font-size:12.5px}
-td{border:1px solid #c9d2ea;padding:${pd}px 8px}.n{width:30px;text-align:center;color:#666}.q{width:130px;text-align:center;font-weight:bold}tr{page-break-inside:avoid}</style></head><body>
+td{border:1px solid #c9d2ea;padding:${pd}px 8px}.sz{font-size:1.25em;color:#000}.nt{font-size:.9em;color:#555}.n{width:30px;text-align:center;color:#666}.q{width:130px;text-align:center;font-weight:bold}tr{page-break-inside:avoid}</style></head><body>
 <h1>طلبية المورد</h1><div class="sub">${esc(mode)}${region?" — "+esc(region):""} — ${esc(periodLabel())}</div>
 <div class="meta"><span>${esc(coFilter||"كل الشركات")}</span><span>${ar(rows.length)} صنف</span><span>التاريخ: ${fmtDate(today())}</span></div>
-<table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الكمية</th></tr></thead><tbody>${rows.map((r,k)=>`<tr><td class="n">${ar(k+1)}</td><td>${ar(esc(r.name))}</td><td class="q">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table>
+<table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الكمية</th></tr></thead><tbody>${rows.map((r,k)=>`<tr><td class="n">${ar(k+1)}</td><td>${nameHtml(r)}</td><td class="q">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table>
 <script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>`;
 }
 function totalsHtml(){
-  const {os,rows:allRows}=totalsData();
+  const {os,rows:all0}=totalsData();const allRows=all0.filter(r=>r.sum>0);
   const parts=DEPTS.map(d=>{const rows=allRows.filter(r=>r.dept===d);const sites=[...new Set(rows.flatMap(r=>Object.keys(r.by)))].sort((a,b)=>SITES.indexOf(a)-SITES.indexOf(b));return {d,rows,sites}}).filter(x=>x.rows.length);
   const co=coFilter||"كل الشركات";
-  const tr=(r,k)=>`<tr><td class="n">${ar(k+1)}</td><td>${ar(esc(r.name))}</td><td class="q">${unitsTxt(r.units)}</td><td class="b">${Object.entries(r.by).map(([s,u])=>`${esc(s)}: ${unitsTxt(u)}`).join("، ")}</td></tr>`;
-  const tbl=(rows,sites)=>sites.length<=8?`<table class="mx"><thead><tr><th>م</th><th>الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th>الإجمالي</th></tr></thead><tbody>${rows.map((r,k)=>`<tr><td>${ar(k+1)}</td><td>${ar(esc(r.name))}</td>${sites.map(s=>`<td>${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td><b>${unitsTxt(r.units)}</b></td></tr>`).join("")}</tbody></table>`
+  const tr=(r,k)=>`<tr><td class="n">${ar(k+1)}</td><td>${nameHtml(r)}</td><td class="q">${unitsTxt(r.units)}</td><td class="b">${Object.entries(r.by).map(([s,u])=>`${esc(s)}: ${unitsTxt(u)}`).join("، ")}</td></tr>`;
+  const tbl=(rows,sites)=>sites.length<=8?`<table class="mx"><thead><tr><th>م</th><th>الصنف</th>${sites.map(s=>`<th>${esc(s)}</th>`).join("")}<th>الإجمالي</th></tr></thead><tbody>${rows.map((r,k)=>`<tr><td>${ar(k+1)}</td><td>${nameHtml(r)}</td>${sites.map(s=>`<td>${r.by[s]?unitsTxt(r.by[s]):""}</td>`).join("")}<td><b>${unitsTxt(r.units)}</b></td></tr>`).join("")}</tbody></table>`
     :`<table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الإجمالي</th><th>الفروع</th></tr></thead><tbody>${rows.map(tr).join("")}</tbody></table>`;
   const page=({d,rows,sites})=>`<section class="pg"><h1>إجمالي الطلبيات</h1><div class="sub">${esc(mode)}${region?" — "+esc(region):""} — ${esc(periodLabel())}</div>
 <div class="dept d${DEPTS.indexOf(d)}">${esc(d)}</div>
@@ -690,15 +693,15 @@ table{width:100%;border-collapse:collapse}th{background:#e6ebfa;color:#1f3fa8;pa
 td{border:1px solid #c9d2ea;padding:3px 5px;vertical-align:top}.n{width:30px;text-align:center;color:#666}.q{width:100px;font-weight:bold;text-align:center}.b{font-size:10.5px;color:#444}
 tr{page-break-inside:avoid}h2{font-size:14px;color:#1f3fa8;margin:8px 0 4px}
 .pg+.pg{break-before:page;page-break-before:always}.dept{text-align:center;color:#fff;font-weight:bold;font-size:17px;padding:5px;margin:4px 0 6px}.dept.d0{background:#b45309}.dept.d1{background:#1f3fa8}.dept.d2{background:#0f766e}
-.mx th,.mx td{font-size:10.5px;padding:3px;text-align:center}.mx td:nth-child(2){text-align:right;white-space:nowrap}
+.mx th,.mx td{font-size:10.5px;padding:3px;text-align:center}.sz{font-size:1.25em;color:#000}.nt{font-size:.9em;color:#555}.mx td:nth-child(2){text-align:right;white-space:nowrap}
 </style></head><body>
 ${parts.map(page).join("")}
 <script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script>
 </body></html>`;
 }
 function totalsWa(){
-  const {rows}=totalsData();
-  return `*إجمالي ${mode}${region?" — "+region:""} — ${periodLabel()}*${coFilter?"\n"+coFilter:""}\n`+rows.map((r,k)=>(k===0||rows[k-1].dept!==r.dept?`\n*— ${r.dept} —*\n`:"")+`• ${r.name}: ${Object.entries(r.units).map(([k,q])=>q+(k?" "+k:"")).join(" + ")}`).join("\n");
+  const rows=totalsData().rows.filter(r=>r.sum>0);
+  return `*إجمالي ${mode}${region?" — "+region:""} — ${periodLabel()}*${coFilter?"\n"+coFilter:""}\n`+rows.map((r,k)=>(k===0||rows[k-1].dept!==r.dept?`\n*— ${r.dept} —*\n`:"")+`• ${r.name}${r.note?" ("+r.note+")":""}: ${Object.entries(r.units).map(([k,q])=>q+(k?" "+k:"")).join(" + ")}`).join("\n");
 }
 
 /* ---------- receipt ---------- */
