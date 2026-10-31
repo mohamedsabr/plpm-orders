@@ -352,7 +352,9 @@ function merge(list){
 /* تعديلات بيانات بتتنفذ مرة واحدة (متسجلة في سجل __adj) */
 function runPatches(){
   if(BACKEND!=="fetch"&&BACKEND!=="gas")return;
-  const done=adjRec.done||(adjRec.done=[]);if(done.includes("p1"))return;
+  const done=adjRec.done||(adjRec.done=[]);
+  if(!done.includes("p2")){(adjRec.adj||(adjRec.adj={}))["2026-10|أدوات نظافة|أكتوبر|*|معطر فريدا"]={q:5,u:"كرتونة",d:"شراء من الخارج"};done.push("p2");persist(adjRec);render()}
+  if(done.includes("p1"))return;
   const T="أدوات نظافة",it=(o,n)=>o&&o.items.find(i=>i.name===n&&!i.group&&!i.sep);
   const put=(o,n,q)=>{let i=it(o,n);if(!i){i={id:uid(),name:n,qty:0,got:0,cat:T};o.items.push(i)}i.qty=q};
   const mm=orders.find(o=>o.id==="mallmasr-1017");
@@ -609,7 +611,7 @@ function totalsData(){
   const pre=adjPrefix();
   Object.entries(adjRec.adj||{}).forEach(([k,v])=>{if(!k.startsWith(pre))return;const n=ITEM_RENAME[k.slice(pre.length)]||k.slice(pre.length);
     let r=rows.find(x=>x.name===n);
-    if(!r){if(!(v.q>0))return;r={name:n,dept:deptOf(n),units:{},by:{},sum:0,extra:true};rows.push(r)}
+    if(!r){if(!(v.q>0))return;r={name:n,dept:v.d||deptOf(n),units:{},by:{},sum:0,extra:true};rows.push(r)}
     r.calc=r.units;r.units=v.q>0?{[v.u||""]:v.q}:{};r.sum=v.q;r.adj=true;});
   rows=rows.filter(r=>r.sum>0||r.adj&&!r.extra);
   rows.sort(tSort==="qty"?(a,b)=>b.sum-a.sum:tSort==="name"?(a,b)=>a.name.localeCompare(b.name,"ar"):(a,b)=>(order.get(a.name)??1e9)-(order.get(b.name)??1e9));
