@@ -668,7 +668,7 @@ function supplierHtml(){
 h1{text-align:center;color:#1f3fa8;font-size:19px;margin:0}.sub{text-align:center;color:#444;margin:1px 0 4px}
 .meta{display:flex;justify-content:space-between;border-bottom:2px solid #1f3fa8;padding-bottom:3px;margin-bottom:5px;font-size:12px}
 table{width:100%;border-collapse:collapse}th{background:#e6ebfa;color:#1f3fa8;padding:${pd}px 8px;border:1px solid #c9d2ea;text-align:right;font-size:12.5px}
-td{border:1px solid #c9d2ea;padding:${pd}px 8px}.sz{font-size:1.25em;color:#000}.nt{font-size:.9em;color:#555}.n{width:30px;text-align:center;color:#666}.q{width:130px;text-align:center;font-weight:bold}tr{page-break-inside:avoid}</style></head><body>
+table{width:auto;min-width:55%;margin:0 auto}td{border:1px solid #c9d2ea;padding:${pd}px 14px;font-size:13px}.sz{font-weight:bold;font-size:1em;color:inherit}.nt{font-size:.9em;color:#555}.n{width:30px;text-align:center;color:#666}.q{width:90px;text-align:center;font-weight:bold}tr{page-break-inside:avoid}</style></head><body>
 <h1>طلبية المورد</h1><div class="sub">${esc(mode)}${region?" — "+esc(region):""} — ${esc(periodLabel())}</div>
 <div class="meta"><span>${esc(coFilter||"كل الشركات")}</span><span>${ar(rows.length)} صنف</span><span>التاريخ: ${fmtDate(today())}</span></div>
 <table><thead><tr><th class="n">م</th><th>الصنف</th><th class="q">الكمية</th></tr></thead><tbody>${rows.map((r,k)=>`<tr><td class="n">${ar(k+1)}</td><td>${nameHtml(r)}</td><td class="q">${unitsTxt(r.units)}</td></tr>`).join("")}</tbody></table>
